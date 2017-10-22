@@ -1,3 +1,5 @@
+package SEMINAR_1;
+
 /**
  * Created by Mihnea on 07.10.2017.
  */

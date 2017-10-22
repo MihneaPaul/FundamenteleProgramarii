@@ -1,3 +1,5 @@
+package SEMINAR_1;
+
 /**
  * se citeste un nr intre n. sa se afiseze de cate ori apare cifra 3 in toat enr de la  la n inclusiv.
  */
