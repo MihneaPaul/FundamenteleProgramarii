@@ -232,9 +232,10 @@ public class FarmacieService {
 
                 case "2":
                     System.out.print("Nume:  ");
-                    String nameOfAddedMed = scanner.next();
+                    String nameOfAddedMed = scanner.nextLine();
 //                    scanner.close();
                     System.out.println();
+                    scanner.nextLine();
                     System.out.print("Pret:  ");
                     int priceOfAddedMed = scanner.nextInt();
                     System.out.println();
@@ -308,6 +309,7 @@ public class FarmacieService {
                                 System.out.print("Selectati produsul:  ");
                                 String selectedProduct = scanShop.next();
                                 System.out.println();
+                                scanShop.nextLine();
                                 System.out.print("Introduceti cantitatea:  ");
                                 int quantityOfProduct = scanShop.nextInt();
                                 inner.addToCart(selectedProduct, quantityOfProduct);
