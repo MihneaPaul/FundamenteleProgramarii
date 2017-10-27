@@ -1,5 +1,7 @@
 package SEMINAR_2.FARMACIE;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
+
 import java.util.*;
 
 /**
@@ -11,13 +13,25 @@ public class FarmacieService {
     private static ShoppingCart cart = new ShoppingCart();
 
     /**
-     * Adds new MedicaMentBean object to the ArrayList of objects.
+     * Adds new MedicamentBean object to the ArrayList of objects.
      * @param medicament
      * @param price
      */
     public void addMed(String medicament, int price){
         beans.add(new MedicamentBean(medicament,price));
     }
+
+    public void deleteMed(String medicamentDelete){
+        if(searchMed(medicamentDelete) != null){
+            beans.removeIf(MedicamentBean -> MedicamentBean.getName().equalsIgnoreCase(medicamentDelete));
+        }
+    }
+
+//    public void changeMedName(String medName) {
+//        if (searchMed(medName) != null){
+//            beans.set(beans.indexOf(medName), )
+//        }
+//    }
 
     /**
      * Searches a Med by it's name or part of it's name in the ArrayList.
@@ -98,21 +112,63 @@ public class FarmacieService {
 
     @Override
     public String toString() {
-        List<String> medicamenteList = new ArrayList<>();
+        List<String> medNameList = new ArrayList<>();
         List<Integer> medPriceList = new ArrayList<>();
         for(MedicamentBean bean:beans){
-            medicamenteList.add(bean.getName());
+            medNameList.add(bean.getName());
             medPriceList.add(bean.getPrice());
 
         }
         return "FarmacieService { " +
-                "Medicamente = " + medicamenteList +
+                "Medicamente = " + medNameList +
                 ",\n Lista Preturi: " + medPriceList +
                 '}';
     }
 
+    public static void mainMenu(){
+        System.out.println("1. Customer");
+        System.out.println("2. Admin");
+    }
+
+    public static void menuAdmin(){
+        System.out.println("----- Farmacie -----");
+        System.out.println();
+        System.out.println("1. Vizualizati stocul");
+        System.out.println("2. Adaugati un medicament");
+        System.out.println("3. Cautati un medicament");
+        System.out.println("4. Stergeti un medicament");
+        System.out.println("5. Modificati un medicament");
+        System.out.println("6. Sortati medicamentele in functie de pret");
+        System.out.println("x. Exit");
+        System.out.println();
+        System.out.print("Selectia: ");
+    }
+
+    public static void menuCustomer(){
+        System.out.println("----- Farmacie -----");
+        System.out.println();
+        System.out.println("1. Vizualizati stocul");
+        System.out.println("2. Cautati un medicament");
+        System.out.println("3. Sortati medicamentele in functie de pret");
+        System.out.println("4. Cumparati");
+        System.out.println("x. Exit");
+        System.out.println();
+        System.out.print("Selectia: ");
+
+    }
+
+    public static void menuShop(){
+        System.out.println("----- Magazin -----");
+        System.out.println();
+        System.out.println("1. Adaugati un produs in cos");
+        System.out.println("2. Stergeti un produs din cos");
+        System.out.println("3. Cost total");
+        System.out.println("4. Checkout");
+    }
+
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         FarmacieService service = new FarmacieService();
+
         MedicamentBean med1 = new MedicamentBean("Nurofen",10);
         MedicamentBean med2 = new MedicamentBean("Algocalmin",15);
         MedicamentBean med3 = new MedicamentBean("Xanax", 5);
@@ -130,32 +186,179 @@ public class FarmacieService {
         service.addMed(med6.getName(),med6.getPrice());
         service.addMed(med7.getName(),med7.getPrice());
 
+        boolean canAccessAdmin = false;
+        boolean canAccessCustomer = false;
+
+        Scanner scanner = new Scanner(System.in);
+        mainMenu();
+        System.out.print("Choose:  ");
+        int selectionMainMenu = scanner.nextInt();
+//        System.out.println("Selections is: "+selectionMainMenu);
+        switch(selectionMainMenu) {
+            case 1:
+                canAccessCustomer = true;
+                break;
+            case 2:
+                System.out.print("Account:  ");
+                String account = scanner.next();
+//                System.out.println("selections is now: " + account);
+                if(account.equalsIgnoreCase("admin")){
+                        System.out.print("Password:  ");
+                        String password = scanner.next();
+                        if(password.equalsIgnoreCase("admin")){
+                                canAccessAdmin = true;
+                        } else try {
+                                throw new Exception("Incorrect password");
+                        } catch (Exception e) {
+                                e.printStackTrace();
+                        }
+                } else try {
+                        throw new Exception("Incorrect account");
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+                System.out.println();
+                break;
+        }
+
+        CAN_ACCESS_ADMIN:
+        while(canAccessAdmin) {
+            menuAdmin();
+            String selectionAdmin = scanner.next();
+            switch (selectionAdmin){
+                case "1":
+                    System.out.println(beans.toString());
+                    break;
+
+                case "2":
+                    System.out.print("Nume:  ");
+                    String nameOfAddedMed = scanner.next();
+//                    scanner.close();
+                    System.out.println();
+                    System.out.print("Pret:  ");
+                    int priceOfAddedMed = scanner.nextInt();
+                    System.out.println();
+                    service.addMed(nameOfAddedMed, priceOfAddedMed);
+                    System.out.println("Medicament adaugat cu success");
+                    System.out.println();
+                    break;
+
+                case "3":
+                    System.out.print("Introduceti numele: ");
+                    String searchedName = scanner.next();
+                    System.out.println();
+                    System.out.println(service.searchMed(searchedName));
+                    System.out.println();
+                    break;
+
+                case "4": // TODO
+                    break;
+
+                case "5": // TODO
+                    break;
+
+                case "6":
+                    bubbleSort();
+                    printAll();
+                    System.out.println();
+                    break;
+
+                case "x":
+                    break CAN_ACCESS_ADMIN;
+            }
+        }
+
+        boolean canAccessCart;
+
+        CAN_ACCESS_CUSTOMER:
+        while(canAccessCustomer){
+            menuCustomer();
+            String selectionCustomer = scanner.next();
+            switch (selectionCustomer) {
+                case "1":
+                    printAll();
+                    System.out.println();
+                    break;
+
+                case "2":
+                    System.out.print("Introduceti numele: ");
+                    String searchedName = scanner.next();
+                    System.out.println();
+                    System.out.println(service.searchMed(searchedName));
+                    System.out.println();
+                    break;
+
+                case "3":
+                    bubbleSort();
+                    printAll();
+                    System.out.println();
+                    break;
+
+                case "4":
+                    canAccessCart = true;
+                    Scanner scanShop = new Scanner(System.in);
+                    while(canAccessCart) {
+                        menuShop();
+                        System.out.print("Selectia:  ");
+                        String selectionShop = scanShop.next();
+                        CartInnerClass inner = new CartInnerClass();
+
+                        switch (selectionShop) {
+                            case "1":
+                                System.out.print("Selectati produsul:  ");
+                                String selectedProduct = scanShop.next();
+                                System.out.println();
+                                System.out.print("Introduceti cantitatea:  ");
+                                int quantityOfProduct = scanShop.nextInt();
+                                inner.addToCart(selectedProduct, quantityOfProduct);
+                                break;
+
+                            case "2":
+                                System.out.print("Selectati produsul:  ");
+                                String willBeDeletedProduct = scanShop.next();
+                                inner.deleteFromCart(willBeDeletedProduct);
+                                break;
+
+                            case "3":
+                                System.out.println(cart.getTotalPrice());
+                                break;
+
+                            case "4":
+                                System.out.println(cart.checkout());
+                                canAccessCart = false;
+                                break;
+                        }
+
+                    }
+                    break;
+
+                case "x":
+                    break CAN_ACCESS_CUSTOMER;
+            }
+        }
+//        System.out.println(med1.getName()+" "+med1.getPrice());
+//        System.out.println("\n");
+//
+//        bubbleSort();
+//
 //        printAll();
-
-        System.out.println(med1.getName()+" "+med1.getPrice());
-        System.out.println("\n");
-        /* CALL THE BUBBLE SORT METHOD*/
-        bubbleSort();
-
-        /* NOW PRINT EVERYTHING*/
-        printAll();
-        System.out.println("\n");
-
-        String m1 = "Xanax";
-        String m2 = "Viagra";
-        CartInnerClass inner = new CartInnerClass();
-
-        inner.addToCart(m1,3);
-        inner.addToCart(m2,1);
-
-
-        System.out.println(cart);
-        System.out.println();
-        System.out.print("Maximum price in cart has the medicine: " + cart.max());
-        System.out.println();
-        cart.checkout();
-        System.out.println();
-        System.out.println(cart);
+//        System.out.println("\n");
+//
+//        String m1 = "Xanax";
+//        String m2 = "Viagra";
+//        CartInnerClass inner = new CartInnerClass();
+//
+//        inner.addToCart(m1,3);
+//        inner.addToCart(m2,1);
+//
+//
+//        System.out.println(cart);
+//        System.out.println();
+//        System.out.print("Maximum price in cart has the medicine: " + cart.max());
+//        System.out.println();
+//        cart.checkout();
+//        System.out.println();
+//        System.out.println(cart);
     }
     public boolean equalsObj(Object object1, Object object2) {
         if(object1 instanceof  MedicamentBean && object1.equals(object2)) {
