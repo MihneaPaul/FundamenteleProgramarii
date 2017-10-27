@@ -12,12 +12,20 @@ public class FarmacieService {
     private static List<MedicamentBean> beans = new ArrayList<>();
     private static ShoppingCart cart = new ShoppingCart();
 
+    public int getLength() {
+        return beans.size();
+    }
+
     /**
      * Adds new MedicamentBean object to the ArrayList of objects.
      * @param medicament
      * @param price
      */
+
     public void addMed(String medicament, int price){
+        if(medicament.length() == 0){
+            throw new IllegalArgumentException("Nume invalid");
+        }
         beans.add(new MedicamentBean(medicament,price));
     }
 
@@ -239,7 +247,11 @@ public class FarmacieService {
                     System.out.print("Pret:  ");
                     int priceOfAddedMed = scanner.nextInt();
                     System.out.println();
-                    service.addMed(nameOfAddedMed, priceOfAddedMed);
+                    try {
+                        service.addMed(nameOfAddedMed, priceOfAddedMed);
+                    } catch (IllegalArgumentException e){
+                        System.out.println(e.getMessage());
+                    }
                     System.out.println("Medicament adaugat cu success");
                     System.out.println();
                     break;
