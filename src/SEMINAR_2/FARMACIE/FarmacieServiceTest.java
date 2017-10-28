@@ -16,21 +16,7 @@ class FarmacieServiceTest {
     @Test
     void addMed() {
         FarmacieService service = new FarmacieService();
-        try {
-            service.addMed("",25);
-            fail("Exceptie nelansata");
-        } catch (IllegalArgumentException e){
-            assertEquals("Nume invalid", e.getMessage());
-        }
-
-        try {
-            service.addMed("xyz",25);
-            fail("Exceptie nelansata");
-        } catch (IllegalArgumentException e){
-            assertEquals("Nume invalid", e.getMessage());
-        }
-
-
+        
         int beforeLength = service.getLength();
         service.addMed("xyz", 30);
         int afterLength = service.getLength();

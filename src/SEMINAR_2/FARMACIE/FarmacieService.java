@@ -23,9 +23,6 @@ public class FarmacieService {
      */
 
     public void addMed(String medicament, int price){
-        if(medicament.length() == 0){
-            throw new IllegalArgumentException("Nume invalid");
-        }
         beans.add(new MedicamentBean(medicament,price));
     }
 
